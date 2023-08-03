@@ -1,0 +1,53 @@
+body {
+  background-color: #f2f2f2;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+form {
+  width: 300px;
+  margin: 0 auto;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  padding: 40px;
+  border-radius: 5px;
+}
+
+label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+input[type="nombre"],
+input[type="correo"],
+input[type="asunto"],
+input[type="mensaje"] {
+  width: 200%;
+  padding: 10px;
+  margin-bottom: 100px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+input[type="submit"] {
+  width: 100%;
+  padding: 10px;
+  border-radius: 5px;
+  border: none;
+  background-color: #4CAF50;
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+input[type="submit"]:hover {
+  background-color: #45a049;
+}
+
+h1 {
+  text-align: center;
+}
+
+h2 {
+  text-align: center;
+}

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Tickets creados</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            font-weight: bold;
+            text-align: left;
+        }
+        
+        .return-button a {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            text-decoration: none;
+            border: none;
+            border-radius: 4px;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+    
+        .return-button a:hover {
+            background-color: #0056b3;
+        }
+        img {
+    width: 200px;
+    height: auto; 
+    margin-right: 20px; 
+  }
+    </style>
+</head>
+<body>
+    <img src="LogoSat.png" alt="Logo de la empresa">
+    <div class="return-button">
+        <a href="navbar.html">&lt;&lt; Regresar</a>
+    </div>
+
+    <h2>Tickets creados</h2>
+    <table>
+        <tr>
+            <th>No.Ticket</th>
+            <th>Nombre</th>
+            <th>Email</th>
+            <th>Unidad a la que pertenece</th>
+            <th>Descripcion del Ticket</th>
+        </tr>
+        <tbody id="tickets-list"></tbody>
+    </table>
+
+    <script src="https://www.gstatic.com/firebasejs/9.0.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.2/firebase-database-compat.js"></script>
+    <script src="firebase-config.js"></script>
+    <script>
+       document.addEventListener('DOMContentLoaded', function() {
+        const firebaseConfig = {
+            apiKey: "AIzaSyAqQ59WQN0Srzk0EAUrdp0qeKiNfHHNCKs",
+            authDomain: "appmoviltickets.firebaseapp.com",
+            databaseURL: "https://appmoviltickets-default-rtdb.firebaseio.com",
+            projectId: "appmoviltickets",
+            storageBucket: "appmoviltickets.appspot.com",
+            messagingSenderId: "549655236347",
+            appId: "1:549655236347:web:098a5e5ff59ca51d806a5e",
+            measurementId: "G-P7879R6RJD"
+            };
+            firebase.initializeApp(firebaseConfig);
+
+            const db = firebase.database();
+            const ticketsRef = db.ref('tickets');
+
+            // Función para mostrar los tickets en la tabla
+            function renderTickets(tickets) {
+                const ticketsList = document.getElementById("tickets-list");
+                ticketsList.innerHTML = "";
+
+                for (const ticketKey in tickets) {
+                    const ticket = tickets[ticketKey];
+
+                    const ticketRow = document.createElement("tr");
+                    ticketRow.innerHTML = `
+                        <td>${ticket.NoTicket}</td>
+                        <td>${ticket.nombre}</td>
+                        <td>${ticket.email}</td>
+                        <td>${ticket.asunto}</td>
+                        <td>${ticket.mensaje}</td>
+                    `;
+
+                    ticketsList.appendChild(ticketRow);
+                }
+            }
+
+            // Mostrar los tickets existentes en la base de datos al cargar la página
+            ticketsRef.on("value", function (snapshot) {
+                const tickets = snapshot.val();
+                renderTickets(tickets);
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <meta charset="UTF-8">
+    <title>Formulario para crear tickets de solicitudes</title>
+    
+    <style>
+        body {
+            background-color: #ffffff;
+            font-family: 'Roboto', sans-serif;
+            font-size: 16px;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        img {
+            max-width: 100%;
+            display: block;
+            margin: 0 auto;
+        }
+
+        form {
+            max-width: 500px;
+            margin: 20px auto;
+            background-color: #dcf4fa;
+            border-radius: 15px;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            color: #555;
+            margin-bottom: 10px;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        textarea {
+            width: 95%;
+            padding: 15px;
+            margin-bottom: 20px;
+            border: none;
+            border-radius: 10px;
+            background-color: #ffffff;
+            font-family: inherit;
+            font-size: 16px;
+            color: #333;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        textarea:focus {
+            outline: none;
+            box-shadow: 0 1px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        input[type="submit"] {
+            background-color: #4caf50;
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            padding: 15px 30px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+
+        .form-group {
+            margin-bottom: 30px;
+        }
+
+        .return-button {
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-analytics.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
+    <script type="module" src="create-ticket.js"></script>
+    <script type="module" src="estado-ticket.js"></script>
+
+</head>
+<body> 
+    <img src="LogoSat.png" alt="Logo de la empresa">
+
+    <form id="create-ticket-form" action="TicketCreado.html" method="GET">
+        <input type="hidden" id="ticket-number" name="ticket-number">
+
+        <h2>Llena los siguientes campos para generar tu ticket a informática</h2>
+        <div class="form-group">
+            <label for="nombre">Nombre:</label>
+            <input type="text" id="nombre" name="nombre" required>  
+        </div>
+        
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="asunto">Unidad:</label>
+            <input type="text" id="asunto" name="asunto" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="mensaje">Inconveniente:</label>
+            <textarea id="mensaje" name="mensaje" required></textarea>
+        </div>
+        
+        
+        <div class="form-group">
+            <input type="submit" value="Enviar solicitud">
+        </div>
+    </form>
+
+    <style>
+    .return-button a {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: #fff;
+        text-decoration: none;
+        border: none;
+        border-radius: 4px;
+        font-weight: bold;
+        transition: background-color 0.3s ease;
+    }
+
+    .return-button a:hover {
+        background-color: #0056b3;
+    }
+    </style>
+
+    <style>
+    .return-button a {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: #fff;
+        text-decoration: none;
+        border: none;
+        border-radius: 4px;
+        font-weight: bold;
+        transition: background-color 0.3s ease;
+    }
+
+    .return-button a:hover {
+        background-color: #0056b3;
+    }
+    </style>
+
+    <div class="return-button">
+        <a href="navbar.html">&lt;&lt; Regresar</a>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const firebaseConfig = {
+            apiKey: "AIzaSyAqQ59WQN0Srzk0EAUrdp0qeKiNfHHNCKs",
+            authDomain: "appmoviltickets.firebaseapp.com",
+            databaseURL: "https://appmoviltickets-default-rtdb.firebaseio.com",
+            projectId: "appmoviltickets",
+            storageBucket: "appmoviltickets.appspot.com",
+            messagingSenderId: "549655236347",
+            appId: "1:549655236347:web:098a5e5ff59ca51d806a5e",
+            measurementId: "G-P7879R6RJD"
+            };
+
+            firebase.initializeApp(firebaseConfig);
+            const form = document.querySelector('#create-ticket-form');
+    
+            form.addEventListener('submit', function(event) {
+                event.preventDefault(); // Evita que el formulario se envíe automáticamente
+    
+                const nombre = document.querySelector('#nombre').value;
+                const email = document.querySelector('#email').value;
+                const asunto = document.querySelector('#asunto').value;
+                const mensaje = document.querySelector('#mensaje').value;
+    
+                // Crea un objeto con los datos del formulario
+                const datos = {
+                    nombre: nombre,
+                    email: email,
+                    asunto: asunto,
+                    mensaje: mensaje,
+                    
+                };
+    
+                // Guarda los datos del ticket en Firebase Realtime Database
+                const db = firebase.database();
+                const ticketsRef = db.ref('tickets');
+                const nuevoTicketRef = ticketsRef.push();
+                
+                nuevoTicketRef.set(datos, function(error) {
+                    if (error) {
+                        // Si ocurrió un error, muestra un mensaje de error
+                        alert('Ocurrió un error al enviar la solicitud');
+                        console.log(error);
+                    } else {
+                        nuevoTicketRef.update({
+            "NoTicket": nuevoTicketRef.key
+        });
+                        // Si la petición fue exitosa, redirecciona al usuario a la página de estado del ticket
+                        alert('La solicitud ha sido enviada correctamente. El número de ticket es: ' + nuevoTicketRef.key);
+                        window.location.href = 'TicketCreado.html?ticket=' + nuevoTicketRef.key;
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

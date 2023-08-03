@@ -1,0 +1,72 @@
+/* Estilos generales */
+body {
+  font-family: 'Montserrat', sans-serif; /* Agregamos la fuente Montserrat */
+  background-color: #c9f3f5;
+}
+  
+
+h1, h2 {
+  text-align: center;
+  color: #333;
+}
+
+form {
+  max-width: 500px;
+  margin: 0 auto;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  border: 1px solid hsl(0, 0%, 65%);
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+  color: #666;
+  
+}
+
+input[type="email"],
+input[type="password"] {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  border: 1px solid hsl(0, 0%, 65%);
+  border-radius: 3px;
+  margin-bottom: 20px;
+  box-sizing: border-box;
+  font-size: 16px;
+}
+
+input[type="submit"] {
+  background-color: #007bff;
+  color: #fff;
+  border: 1px solid hsl(0, 0%, 65%);
+  border-radius: 3px;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+a {
+  color: #007bff;
+}
+
+/* Estilos específicos para dispositivos móviles */
+@media screen and (max-width: 480px) {
+  form {
+    padding: 10px;
+  }
+
+  input[type="email"],
+  input[type="password"] {
+    padding: 8px;
+    font-size: 14px;
+  }
+
+  input[type="submit"] {
+    padding: 8px 16px;
+    font-size: 14px;
+  }
+}

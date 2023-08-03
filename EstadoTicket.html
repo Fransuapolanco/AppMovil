@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Estado del ticket</title>
+    <style>
+        .ticket {
+            background-color: #f5f5f5;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+
+        .ticket-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .ticket-status {
+            margin-bottom: 5px;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        .status-open {
+            background-color: #5cb85c;
+            color: #fff;
+        }
+
+        .status-in-progress {
+            background-color: #f0ad4e;
+            color: #fff;
+        }
+
+        .status-closed {
+            background-color: #d9534f;
+            color: #fff;
+        }
+
+        /* Estilos del semáforo */
+        .semaphore {
+            display: inline-block;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+
+        .semaphore-green {
+            background-color: #5cb85c;
+        }
+
+        .semaphore-yellow {
+            background-color: #f0ad4e;
+        }
+
+        .semaphore-red {
+            background-color: #d9534f;
+        }
+
+        .return-button a {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            text-decoration: none;
+            border: none;
+            border-radius: 4px;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+
+        .return-button a:hover {
+            background-color: #0056b3;
+        }
+        .change-status {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .change-status select {
+            margin-right: 10px;
+        }
+
+        .logo {
+            float: right;
+            max-width: 100px;
+            margin-top: 20px;
+        }
+
+        /* Nuevos estilos para la tabla */
+        .ticket-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .ticket-table th, .ticket-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+
+        /* Estilos para los botones */
+        .change-status button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            padding: 8px 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .change-status button:hover {
+            background-color: #0056b3;
+        }
+
+        .return-button a {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            text-decoration: none;
+            border: none;
+            border-radius: 4px;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+
+        .return-button a:hover {
+            background-color: #0056b3;
+        }
+        .change-status {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 10px;
+        }
+
+        .logo {
+            float: right;
+            max-width: 100px;
+            margin-top: 20px;
+        }
+
+    </style>
+</head>
+<body>
+    <!-- Instrucciones de estados -->
+    <div style="margin-bottom: 20px;">
+        <h3>Significado de los estados de los tickets:</h3>
+        <p>
+            <span class="semaphore semaphore-green"></span> Abierto: El ticket se encuentra en espera de ser atendido.
+        </p>
+        <p>
+            <span class="semaphore semaphore-yellow"></span> En progreso: El ticket está siendo atendido actualmente.
+        </p>
+        <p>
+            <span class="semaphore semaphore-red"></span> Cerrado: El ticket ha sido atendido y se considera resuelto.
+        </p>
+    </div>
+
+    <img src="Ticket.png" alt="Logo Ticket" class="logo">
+
+    <div class="return-button">
+        <a href="navbar.html">&lt;&lt; Regresar</a>
+    </div>
+
+    <h2>Estado del ticket</h2>
+    <table class="ticket-table">
+        <thead>
+            <tr>
+                <th>Número de Ticket</th>
+                <th>Estado</th>
+                <th>Contenido</th>
+                <th>Opciones</th>
+            </tr>
+        </thead>
+        <tbody id="tickets-list">
+        </tbody>
+    </table>
+
+
+    <script src="https://www.gstatic.com/firebasejs/9.0.2/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.2/firebase-analytics.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.2/firebase-database.js"></script>
+
+    <script>
+        const ticketsList = document.getElementById("tickets-list");
+
+        const db = firebase.database();
+        const ticketsRef = db.ref("tickets");
+
+        ticketsRef.on("value", function(snapshot) {
+            const tickets = snapshot.val();
+
+            ticketsList.innerHTML = "";
+
+            for (const ticketKey in tickets) {
+                const ticket = tickets[ticketKey];
+
+                const ticketDiv = document.createElement("div");
+                ticketDiv.className = "ticket";
+
+                const ticketTitle = document.createElement("div");
+                ticketTitle.className = "ticket-title";
+                ticketTitle.textContent = "Ticket #" + ticketKey;
+                ticketDiv.appendChild(ticketTitle);
+
+                const ticketStatus = document.createElement("div");
+                ticketStatus.className = "ticket-status";
+
+                const semaphoreDiv = document.createElement("div");
+                semaphoreDiv.className = "semaphore";
+                if (ticket.status === "open") {
+                    semaphoreDiv.classList.add("semaphore-green");
+                } else if (ticket.status === "in-progress") {
+                    semaphoreDiv.classList.add("semaphore-yellow");
+                } else if (ticket.status === "closed") {
+                    semaphoreDiv.classList.add("semaphore-red");
+                }
+                ticketStatus.appendChild(semaphoreDiv);
+
+                const statusSpan = document.createElement("span");
+                statusSpan.className = "status";
+                statusSpan.textContent = ticket.status.charAt(0).toUpperCase() + ticket.status.slice(1);
+                ticketStatus.appendChild(statusSpan);
+
+                ticketDiv.appendChild(ticketStatus);
+
+                const ticketContent = document.createElement("div");
+                ticketContent.className = "ticket-content";
+                ticketContent.textContent = ticket.content;
+                ticketDiv.appendChild(ticketContent);
+
+                // Agregar opción para cambiar el estado
+                const changeStatusDiv = document.createElement("div");
+                changeStatusDiv.className = "change-status";
+
+                const statusSelect = document.createElement("select");
+                statusSelect.innerHTML = `
+                    <option value="open" ${ticket.status === 'open' ? 'selected' : ''}>Abierto</option>
+                    <option value="in-progress" ${ticket.status === 'in-progress' ? 'selected' : ''}>En progreso</option>
+                    <option value="closed" ${ticket.status === 'closed' ? 'selected' : ''}>Cerrado</option>
+                `;
+                changeStatusDiv.appendChild(statusSelect);
+
+                const updateButton = document.createElement("button");
+                updateButton.textContent = "Actualizar estado";
+                updateButton.onclick = function() {
+                    const newStatus = statusSelect.value;
+                    updateTicketStatus(ticketKey, newStatus);
+                };
+                changeStatusDiv.appendChild(updateButton);
+
+                ticketDiv.appendChild(changeStatusDiv);
+
+                ticketsList.appendChild(ticketDiv);
+            }
+        });
+
+        // Función para actualizar el estado del ticket en Firebase
+        function updateTicketStatus(ticketKey, newStatus) {
+            ticketsRef.child(ticketKey).update({ status: newStatus })
+                .then(function() {
+                    console.log("Estado del ticket actualizado correctamente.");
+                })
+                .catch(function(error) {
+                    console.error("Error al actualizar el estado del ticket:", error);
+                });
+        }
+        
+    </script>
+</body>
+</html>
